@@ -1,6 +1,6 @@
 const gameOverScreen = document.getElementById('gameOverScreen');
 const finalScoreSpan = document.getElementById('finalScore');
-const restartButton = document.getElementById('restartButton');
+const continueButton = document.getElementById('restartButton');
 
 const TETRIS_CANVAS = document.getElementById('tetrisCanvas');
 
@@ -178,6 +178,8 @@ function drawBlock(x, y, color, context = CTX, stroke = false) {
 }
 
 function drawBoard() {
+    console.log('drawBoard running');
+    console.log(board);
     for (let r = 0; r < ROWS; r++) {
         for (let c = 0; c < COLS; c++) {
             if (board[r][c] !== 0) {
@@ -367,6 +369,7 @@ function drawControls() {
 }
 
 function gameLoop(currentTime) {
+    console.log('gameLoop running');
     if (gameOver || paused) {
         return;
     }
@@ -398,7 +401,9 @@ function gameLoop(currentTime) {
 }
 
 function resetGame() {
+    console.log('resetGame function called!');
     gameOverScreen.classList.add('hidden');
+    document.getElementById('game-container').classList.remove('hidden');
     cancelAnimationFrame(animationFrameId);
     initBoard();
     score = 0;
@@ -524,7 +529,10 @@ START_BUTTON.addEventListener('click', () => {
     resetGame();
 });
 
-restartButton.addEventListener('click', restartGame);
+continueButton.addEventListener('click', () => {
+    console.log('Continue button clicked!');
+    restartGame();
+});
 
 // Initial setup
 drawControls();
