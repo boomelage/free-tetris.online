@@ -55,8 +55,50 @@ button {
     cursor: pointer;
     font-size: 16px;
     margin-top: auto; /* Push button to the bottom */
+    font-family: "Courier New", monospace;
 }
 
 button:hover {
     background-color: #45a049;
+}
+
+#gameOverScreen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: green;
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 100;
+}
+
+#gameOverScreen h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+#gameOverScreen p {
+    font-size: 1.5em;
+    margin-bottom: 30px;
+}
+
+#gameOverScreen button {
+    background-color: green;
+    color: black;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+#gameOverScreen button:hover {
+    background-color: #0056b3;
+}
+
+.hidden {
+    display: none !important;
 }

@@ -1,4 +1,11 @@
+const gameOverScreen = document.getElementById('gameOverScreen');
+const finalScoreSpan = document.getElementById('finalScore');
+const restartButton = document.getElementById('restartButton');
+
 const TETRIS_CANVAS = document.getElementById('tetrisCanvas');
+
+// Game variables
+
 const NEXT_PIECE_CANVAS = document.getElementById('nextPieceCanvas');
 const CURRENT_PIECE_PREVIEW_CANVAS = document.getElementById('currentPiecePreviewCanvas');
 const SCORE_DISPLAY = document.getElementById('score');
@@ -144,9 +151,9 @@ function spawnNewTetromino() {
 
     // Initial position
     if (currentTetrominoShapeName === 'I') {
-        tetrominoPos = [Math.floor(COLS / 2) - Math.floor(currentTetrominoShape[0].length / 2) - 1, 0];
+        tetrominoPos = [Math.floor(COLS / 2) - Math.floor(currentTetrominoShape[0].length / 2) - 1, -2];
     } else {
-        tetrominoPos = [Math.floor(COLS / 2) - Math.floor(currentTetrominoShape[0].length / 2), 0];
+        tetrominoPos = [Math.floor(COLS / 2) - Math.floor(currentTetrominoShape[0].length / 2), -2];
     }
 
     hasChanged = false; // Reset change tracker for the new block
@@ -361,7 +368,6 @@ function drawControls() {
 
 function gameLoop(currentTime) {
     if (gameOver || paused) {
-        animationFrameId = requestAnimationFrame(gameLoop); // Keep loop running for pause/game over screen updates
         return;
     }
 
@@ -386,10 +392,13 @@ function gameLoop(currentTime) {
 
     drawTetrominoPreview(currentTetrominoShape, CURRENT_PREVIEW_CTX, TETROMINOES[currentTetrominoShapeName].color);
 
-    animationFrameId = requestAnimationFrame(gameLoop);
+    if (!gameOver && !paused) {
+        animationFrameId = requestAnimationFrame(gameLoop);
+    }
 }
 
 function resetGame() {
+    gameOverScreen.classList.add('hidden');
     cancelAnimationFrame(animationFrameId);
     initBoard();
     score = 0;
@@ -409,18 +418,15 @@ function resetGame() {
 }
 
 function showGameOverScreen(finalScore) {
-    CTX.clearRect(0, 0, TETRIS_CANVAS.width, TETRIS_CANVAS.height);
-    CTX.fillStyle = 'rgba(0, 0, 0, 0.75)';
-    CTX.fillRect(0, 0, TETRIS_CANVAS.width, TETRIS_CANVAS.height);
+    gameOverScreen.classList.remove('hidden');
+    finalScoreSpan.textContent = finalScore;
+    document.getElementById('game-container').classList.add('hidden');
+}
 
-    CTX.fillStyle = 'green'; // Changed to green
-    CTX.font = '48px "Courier New", monospace'; // Changed font
-    CTX.textAlign = 'center';
-    CTX.fillText('Game Over', TETRIS_CANVAS.width / 2, TETRIS_CANVAS.height / 2 - 50);
-
-    CTX.font = '24px "Courier New", monospace'; // Changed font
-    CTX.fillText(`Score: ${finalScore}`, TETRIS_CANVAS.width / 2, TETRIS_CANVAS.height / 2);
-    CTX.fillText('Press Start to Play Again', TETRIS_CANVAS.width / 2, TETRIS_CANVAS.height / 2 + 50);
+function restartGame() {
+    gameOverScreen.classList.add('hidden');
+    document.getElementById('game-container').classList.remove('hidden');
+    resetGame();
 }
 
 // Event Listeners
@@ -506,6 +512,8 @@ document.addEventListener('keyup', e => {
 START_BUTTON.addEventListener('click', () => {
     resetGame();
 });
+
+restartButton.addEventListener('click', restartGame);
 
 // Initial setup
 drawControls();
