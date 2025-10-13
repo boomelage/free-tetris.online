@@ -119,6 +119,7 @@ let currentTetrominoShape;
 let tetrominoPos = [0, 0];
 let hasChanged = false; // For 'Z' key swap
 let gameOver = false;
+let showGhost = true; // New variable to toggle ghost visibility
 let paused = false;
 let lastMoveTime = 0;
 let animationFrameId;
@@ -193,11 +194,11 @@ function drawBoard() {
     }
 }
 
-function drawTetromino(tetromino, pos, color, context = CTX) {
+function drawTetromino(tetromino, pos, color) {
     for (let r = 0; r < tetromino.length; r++) {
         for (let c = 0; c < tetromino[r].length; c++) {
             if (tetromino[r][c] === 1) {
-                drawBlock(pos[0] + c, pos[1] + r, color, context);
+                drawBlock(pos[0] + c, pos[1] + r, color, CTX);
             }
         }
     }
@@ -277,18 +278,16 @@ function getGhostPos() {
     return [tetrominoPos[0], ghostY];
 }
 
-function drawGhostTetromino(tetromino, pos) {
+function drawGhostTetromino(tetromino, pos, color) {
+    CTX.globalAlpha = 0.3; // Set translucency
     for (let r = 0; r < tetromino.length; r++) {
         for (let c = 0; c < tetromino[r].length; c++) {
             if (tetromino[r][c] === 1) {
-                // Draw with a transparent or outlined style
-                CTX.strokeStyle = 'lightgray'; // Changed to lightgray
-                CTX.lineWidth = 2;
-                CTX.strokeRect((pos[0] + c) * BLOCK_SIZE, (pos[1] + r) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-                CTX.lineWidth = 1; // Reset to default
+                drawBlock(pos[0] + c, pos[1] + r, 'lightgray', CTX);
             }
         }
     }
+    CTX.globalAlpha = 1.0; // Reset alpha
 }
 
 function lockPiece() {
@@ -364,6 +363,7 @@ function drawControls() {
         "Space: Hard Drop",
         "Z: Swap Piece",
         "P: Pause/Unpause",
+        "G: Toggle Ghost"
     ];
     CONTROLS_DISPLAY.innerHTML = controls.map(c => `<p>${c}</p>`).join('');
 }
@@ -381,11 +381,12 @@ function gameLoop(currentTime) {
         lastMoveTime = currentTime;
     }
 
-    // Clear and redraw everything
     CTX.clearRect(0, 0, TETRIS_CANVAS.width, TETRIS_CANVAS.height);
     drawBoard();
-    const ghostPos = getGhostPos();
-    drawGhostTetromino(currentTetrominoShape, ghostPos, TETROMINOES[currentTetrominoShapeName].color);
+    if (showGhost) {
+        const ghostPos = getGhostPos();
+        drawGhostTetromino(currentTetrominoShape, ghostPos, TETROMINOES[currentTetrominoShapeName].color);
+    }
     drawTetromino(currentTetrominoShape, tetrominoPos, TETROMINOES[currentTetrominoShapeName].color);
 
     // Draw previews
@@ -510,12 +511,18 @@ document.addEventListener('keydown', e => {
                 hasChanged = true;
             }
             break;
+        case 'g': // G key to toggle ghost piece
+        case 'G':
+            showGhost = !showGhost;
+            break;
     }
     // Redraw immediately after any key press to reflect changes
     CTX.clearRect(0, 0, TETRIS_CANVAS.width, TETRIS_CANVAS.height);
     drawBoard();
-    const ghostPos = getGhostPos();
-    drawGhostTetromino(currentTetrominoShape, ghostPos, TETROMINOES[currentTetrominoShapeName].color);
+    if (showGhost) {
+        const ghostPos = getGhostPos();
+        drawGhostTetromino(currentTetrominoShape, ghostPos, TETROMINOES[currentTetrominoShapeName].color);
+    }
     drawTetromino(currentTetrominoShape, tetrominoPos, TETROMINOES[currentTetrominoShapeName].color);
 });
 
