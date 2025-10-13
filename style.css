@@ -1,0 +1,62 @@
+body {
+    margin: 0;
+    background-color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: "Courier New", monospace; /* Changed to typewriter font */
+    color: green; /* Changed to green */
+}
+
+#game-container {
+    display: flex;
+    background-color: #222;
+    border: 5px solid #555;
+}
+
+#tetrisCanvas {
+    background-color: #000;
+    border-right: 2px solid #555;
+}
+
+#sidebar {
+    width: 180px; /* Increased width to accommodate more info */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align items to the start */
+}
+
+#nextPieceCanvas,
+#currentPiecePreviewCanvas {
+    background-color: #111;
+    border: 1px solid #444;
+    margin-bottom: 10px; /* Reduced margin for more elements */
+}
+
+h2 {
+    margin-top: 0;
+    margin-bottom: 5px; /* Reduced margin */
+}
+
+#controls-display {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: auto; /* Push button to the bottom */
+}
+
+button:hover {
+    background-color: #45a049;
+}
