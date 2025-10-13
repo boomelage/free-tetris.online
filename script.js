@@ -392,7 +392,7 @@ function gameLoop(currentTime) {
 
     // Draw previews
     // Draw the next tetromino
-    const nextPieceShapeName = fallingTetrominoQueue[0]; // The actual next piece
+    const nextPieceShapeName = fallingTetrominoQueue[1]; // The actual next piece
     const nextPieceShape = TETROMINOES[nextPieceShapeName].shapes[0];
     drawTetrominoPreview(nextPieceShape, NEXT_CTX, TETROMINOES[nextPieceShapeName].color);
 
