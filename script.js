@@ -7,7 +7,7 @@ const TETRIS_CANVAS = document.getElementById('tetrisCanvas');
 // Game variables
 
 const NEXT_PIECE_CANVAS = document.getElementById('nextPieceCanvas');
-const CURRENT_PIECE_PREVIEW_CANVAS = document.getElementById('currentPiecePreviewCanvas');
+const STASHED_PIECE_CANVAS = document.getElementById('stashedPieceCanvas');
 const SCORE_DISPLAY = document.getElementById('score');
 const LEVEL_DISPLAY = document.getElementById('level');
 const START_BUTTON = document.getElementById('startButton');
@@ -15,7 +15,7 @@ const CONTROLS_DISPLAY = document.getElementById('controls-display');
 
 const CTX = TETRIS_CANVAS.getContext('2d');
 const NEXT_CTX = NEXT_PIECE_CANVAS.getContext('2d');
-const CURRENT_PREVIEW_CTX = CURRENT_PIECE_PREVIEW_CANVAS.getContext('2d');
+const STASHED_CTX = STASHED_PIECE_CANVAS.getContext('2d');
 
 const COLS = 10;
 const ROWS = 20;
@@ -118,6 +118,7 @@ let currentTetrominoRotationIndex;
 let currentTetrominoShape;
 let tetrominoPos = [0, 0];
 let hasChanged = false; // For 'Z' key swap
+let stashedTetromino = null;
 let gameOver = false;
 let showGhost = true; // New variable to toggle ghost visibility
 let paused = false;
@@ -390,11 +391,18 @@ function gameLoop(currentTime) {
     drawTetromino(currentTetrominoShape, tetrominoPos, TETROMINOES[currentTetrominoShapeName].color);
 
     // Draw previews
-    const nextPieceShapeName = fallingTetrominoQueue[1];
-    const nextPieceShape = TETROMINOES[nextPieceShapeName].shapes[0]; // Always show initial rotation for next
+    // Draw the next tetromino
+    const nextPieceShapeName = fallingTetrominoQueue[0]; // The actual next piece
+    const nextPieceShape = TETROMINOES[nextPieceShapeName].shapes[0];
     drawTetrominoPreview(nextPieceShape, NEXT_CTX, TETROMINOES[nextPieceShapeName].color);
 
-    drawTetrominoPreview(currentTetrominoShape, CURRENT_PREVIEW_CTX, TETROMINOES[currentTetrominoShapeName].color);
+    // Draw the stashed tetromino
+    if (stashedTetromino !== null) {
+        const stashedPieceShape = TETROMINOES[stashedTetromino].shapes[0];
+        drawTetrominoPreview(stashedPieceShape, STASHED_CTX, TETROMINOES[stashedTetromino].color);
+    } else {
+        STASHED_CTX.clearRect(0, 0, STASHED_PIECE_CANVAS.width, STASHED_PIECE_CANVAS.height);
+    }
 
     if (!gameOver && !paused) {
         animationFrameId = requestAnimationFrame(gameLoop);
@@ -414,6 +422,7 @@ function resetGame() {
     gameOver = false;
     paused = false;
     hasChanged = false;
+    stashedTetromino = null; // Clear stashed tetromino on game reset
     upKeyPressed = false;
     SCORE_DISPLAY.textContent = score;
     LEVEL_DISPLAY.textContent = level;
@@ -442,7 +451,7 @@ function restartGame() {
     CTX.textAlign = 'center';
     CTX.fillText('Press Start', TETRIS_CANVAS.width / 2, TETRIS_CANVAS.height / 2);
     NEXT_CTX.clearRect(0, 0, NEXT_PIECE_CANVAS.width, NEXT_PIECE_CANVAS.height);
-    CURRENT_PREVIEW_CTX.clearRect(0, 0, CURRENT_PIECE_PREVIEW_CANVAS.width, CURRENT_PIECE_PREVIEW_CANVAS.height);
+    STASHED_CTX.clearRect(0, 0, STASHED_PIECE_CANVAS.width, STASHED_PIECE_CANVAS.height); // Clear the stashed piece canvas
     START_BUTTON.style.display = 'block'; // Show the start button
 }
 
@@ -490,15 +499,22 @@ document.addEventListener('keydown', e => {
         case 'z': // Z key for swap
         case 'Z':
             if (!hasChanged) {
-                // Swap current with next in queue
-                const currentShape = currentTetrominoShapeName;
-                const nextShapeInQueue = fallingTetrominoQueue[1];
+                let tempCurrentTetrominoShapeName = currentTetrominoShapeName;
 
-                fallingTetrominoQueue[0] = nextShapeInQueue;
-                fallingTetrominoQueue[1] = currentShape;
+                if (stashedTetromino === null) {
+                    stashedTetromino = tempCurrentTetrominoShapeName;
+                    currentTetrominoShapeName = fallingTetrominoQueue.shift(); // Get the next piece from the queue
+                    // Replenish the queue if it's getting low (e.g., less than 7 pieces left)
+                    if (fallingTetrominoQueue.length <= 7) {
+                        const allTetrominoTypes = Object.keys(TETROMINOES);
+                        const newTetrominoes = Array(7).fill(0).map(() => allTetrominoTypes[Math.floor(Math.random() * allTetrominoTypes.length)]);
+                        fallingTetrominoQueue.push(...newTetrominoes);
+                    }
+                } else {
+                    currentTetrominoShapeName = stashedTetromino;
+                    stashedTetromino = tempCurrentTetrominoShapeName;
+                }
 
-                // Re-spawn the new current piece
-                currentTetrominoShapeName = fallingTetrominoQueue[0];
                 currentTetrominoRotationIndex = 0;
                 currentTetrominoShape = TETROMINOES[currentTetrominoShapeName].shapes[currentTetrominoRotationIndex];
 
