@@ -20,7 +20,7 @@ const CURRENT_PREVIEW_CTX = CURRENT_PIECE_PREVIEW_CANVAS.getContext('2d');
 const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = 30; // Pixels
-const MOVE_DELAY = 500; // Milliseconds between automatic downward movement
+const MOVE_DELAY = 750; // Milliseconds between automatic downward movement
 
 TETRIS_CANVAS.width = COLS * BLOCK_SIZE;
 TETRIS_CANVAS.height = ROWS * BLOCK_SIZE;
@@ -415,6 +415,7 @@ function resetGame() {
     spawnNewTetromino();
     lastMoveTime = performance.now(); // Reset lastMoveTime for accurate timing
     animationFrameId = requestAnimationFrame(gameLoop);
+    START_BUTTON.style.display = 'none'; // Hide the start button when game begins
 }
 
 function showGameOverScreen(finalScore) {
@@ -426,7 +427,17 @@ function showGameOverScreen(finalScore) {
 function restartGame() {
     gameOverScreen.classList.add('hidden');
     document.getElementById('game-container').classList.remove('hidden');
-    resetGame();
+    // Display a simple start screen initially
+    CTX.clearRect(0, 0, TETRIS_CANVAS.width, TETRIS_CANVAS.height);
+    CTX.fillStyle = 'black';
+    CTX.fillRect(0, 0, TETRIS_CANVAS.width, TETRIS_CANVAS.height);
+    CTX.fillStyle = 'green';
+    CTX.font = '30px "Courier New", monospace';
+    CTX.textAlign = 'center';
+    CTX.fillText('Press Start', TETRIS_CANVAS.width / 2, TETRIS_CANVAS.height / 2);
+    NEXT_CTX.clearRect(0, 0, NEXT_PIECE_CANVAS.width, NEXT_PIECE_CANVAS.height);
+    CURRENT_PREVIEW_CTX.clearRect(0, 0, CURRENT_PIECE_PREVIEW_CANVAS.width, CURRENT_PIECE_PREVIEW_CANVAS.height);
+    START_BUTTON.style.display = 'block'; // Show the start button
 }
 
 // Event Listeners
