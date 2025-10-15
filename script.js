@@ -20,7 +20,7 @@ const STASHED_CTX = STASHED_PIECE_CANVAS.getContext('2d');
 const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = 30; // Pixels
-const MOVE_DELAY = 750; // Milliseconds between automatic downward movement
+const MOVE_DELAY = 1000; // Milliseconds between automatic downward movement
 
 TETRIS_CANVAS.width = COLS * BLOCK_SIZE;
 TETRIS_CANVAS.height = ROWS * BLOCK_SIZE;
