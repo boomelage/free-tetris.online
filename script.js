@@ -25,6 +25,11 @@ const MOVE_DELAY = 750; // Milliseconds between automatic downward movement
 TETRIS_CANVAS.width = COLS * BLOCK_SIZE;
 TETRIS_CANVAS.height = ROWS * BLOCK_SIZE;
 
+NEXT_PIECE_CANVAS.width = 4 * BLOCK_SIZE;
+NEXT_PIECE_CANVAS.height = 4 * BLOCK_SIZE;
+STASHED_PIECE_CANVAS.width = 4 * BLOCK_SIZE;
+STASHED_PIECE_CANVAS.height = 4 * BLOCK_SIZE;
+
 // Tetrominoes with all rotation states (matching Python structure)
 const TETROMINOES = {
     'I': {
@@ -342,16 +347,23 @@ function clearLines() {
 
 function drawTetrominoPreview(tetromino, context, color) {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-    // Calculate center offset for preview
-    const pieceWidth = tetromino[0].length;
-    const pieceHeight = tetromino.length;
-    const startX = Math.floor((context.canvas.width / BLOCK_SIZE - pieceWidth) / 2);
-    const startY = Math.floor((context.canvas.height / BLOCK_SIZE - pieceHeight) / 2);
+    const pieceWidthBlocks = tetromino[0].length;
+    const pieceHeightBlocks = tetromino.length;
 
-    for (let r = 0; r < pieceHeight; r++) {
-        for (let c = 0; c < pieceWidth; c++) {
+    // Calculate total pixel dimensions of the tetromino
+    const pieceWidthPixels = pieceWidthBlocks * BLOCK_SIZE;
+    const pieceHeightPixels = pieceHeightBlocks * BLOCK_SIZE;
+
+    // Calculate pixel offset to center the tetromino within the canvas
+    const offsetX = (context.canvas.width - pieceWidthPixels) / 2;
+    const offsetY = (context.canvas.height - pieceHeightPixels) / 2;
+
+    for (let r = 0; r < pieceHeightBlocks; r++) {
+        for (let c = 0; c < pieceWidthBlocks; c++) {
             if (tetromino[r][c] === 1) {
-                drawBlock(startX + c, startY + r, color, context);
+                // Draw block at its position relative to the tetromino's top-left,
+                // plus the overall pixel offset for centering.
+                drawBlock(offsetX / BLOCK_SIZE + c, offsetY / BLOCK_SIZE + r, color, context);
             }
         }
     }
