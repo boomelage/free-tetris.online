@@ -484,12 +484,15 @@ document.addEventListener('keydown', e => {
 
     switch (e.key) {
         case 'ArrowLeft':
+            e.preventDefault();
             moveTetromino(-1, 0);
             break;
         case 'ArrowRight':
+            e.preventDefault();
             moveTetromino(1, 0);
             break;
         case 'ArrowDown':
+            e.preventDefault();
             if (moveTetromino(0, 1)) {
                 score += 1; // Soft drop score
                 SCORE_DISPLAY.textContent = score;
@@ -499,6 +502,7 @@ document.addEventListener('keydown', e => {
             lastMoveTime = performance.now(); // Reset timer after manual drop
             break;
         case 'ArrowUp':
+            e.preventDefault();
             if (!upKeyPressed) {
                 tryRotate();
                 upKeyPressed = true;
