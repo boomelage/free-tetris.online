@@ -7,8 +7,12 @@ body {
     min-height: 100vh;
     font-family: "Courier New", monospace; /* Changed to typewriter font */
     color: green; /* Changed to green */
-    cursor: url('https://cur.cursors-4u.net/mechanics/mec-2/mec111.cur'), auto;
+    cursor: url('https://cur.cursors-4u.net/games/gam-2/gam182.cur'), auto;
 }
+*,
+*::before,
+*::after {
+  cursor: url('https://cur.cursors-4u.net/games/gam-2/gam182.cur'), auto !important;
 
 #game-container {
     display: flex;
