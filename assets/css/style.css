@@ -118,8 +118,6 @@ button:hover {
     left: 0;
     right: 0;
     z-index: 1000;
-    /*background: #000;*/
-    border-bottom: 1px solid #333;
     text-align: center;
     padding: 10px 12px;
     font-family: "Courier New", monospace;
