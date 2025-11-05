@@ -5,6 +5,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    padding-top: 44px; /* Space for fixed banner */
     font-family: "Courier New", monospace; /* Changed to typewriter font */
     color: green; /* Changed to green */
     cursor: url('https://cur.cursors-4u.net/games/gam-2/gam182.cur'), auto;
@@ -13,6 +14,8 @@ body {
 *::before,
 *::after {
   cursor: url('https://cur.cursors-4u.net/games/gam-2/gam182.cur'), auto !important;
+
+}
 
 #game-container {
     display: flex;
@@ -106,4 +109,30 @@ button:hover {
 
 .hidden {
     display: none !important;
+}
+
+/* Persistent top banner*/
+#banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    /*background: #000;*/
+    border-bottom: 1px solid #333;
+    text-align: center;
+    padding: 10px 12px;
+    font-family: "Courier New", monospace;
+    font-size: 12px;
+    line-height: 1.2;
+    letter-spacing: 0.5px;
+}
+
+#banner a {
+    color: #2ea8ff; 
+    text-decoration: underline;
+}
+
+#banner a:hover {
+    color: #66c2ff; 
 }
